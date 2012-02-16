@@ -15,8 +15,10 @@ class Curl
 
 	/**
 	 * This method tries to emulate wget in that it takes a URL and saves the file
-	 * received to the $directory directory
+	 * received to the $directory directory.
+	 * Warning: This method overwrites any file with the same name
 	 * @param string $directory
+	 * @return File the file downloaded
 	 * @throws Exception
 	 */
 	public function download($directory)
@@ -34,17 +36,18 @@ class Curl
 	    $out = curl_exec($ch);
 
 		if (!$this->filename) {
-			throw new Exception("No filename found\n{$this->headers}");
+			throw new \Exception("No filename found\n{$this->headers}");
 		}
 
-		if (substr($directory, -1) != DIRECTORY_SEPARATOR) {
-			$directory .= DIRECTORY_SEPARATOR;
-		}
+		$dir = new Dir($directory);
+		$fullpath = $dir->get() . $this->filename;
 
-		copy($temp_file, $directory . $this->filename);
+		copy($temp_file, $fullpath);
 
 		curl_close($ch);
 	    fclose($fp);
+
+	    return new File($fullpath);
 	}
 
 	public function headerCallback($ch, $line)
