@@ -1,17 +1,17 @@
 <?php
 
-namespace Matt;
+namespace Matt\System\Dir;
+
+use Matt\System\Dir;
 
 require_once DIR_WORDPRESS . DIRECTORY_SEPARATOR . 'wp-load.php';
 
-class Wordpress
+class Wordpress extends Dir
 {
 	const DIR_LIB = '/home/matt/www/libs/wordpress/';
-
-	/**
-	 * @var Dir
-	 */
-	private $path;
+	const WP_INCLUDES = 'wp-includes';
+	const WP_ADMIN = 'wp-admin';
+	const WP_CONTENT = 'wp-content';
 
 	/**
 	 * @var boolean
@@ -24,7 +24,7 @@ class Wordpress
 			throw new \Exception('The constant DIR_WORDPRESS must be defined prior to instantiating this object');
 		}
 
-		$this->path = new Dir(DIR_WORDPRESS);
+		parent::__construct(DIR_WORDPRESS);
 	}
 
 	public function upgrade()
@@ -37,11 +37,26 @@ class Wordpress
 
 		$url = $update->download;
 
+		$lib = new Dir(self::DIR_LIB);
+
 		$curl = new \Matt\Curl($url);
-		$download = $curl->download(self::DIR_LIB);
-		$download->extract();
+		$download = $curl->download($lib);
+		$files = $download->extract();
 
 		$this->backup();
+
+		$delete_copy = array(self::WP_ADMIN, self::WP_INCLUDES);
+
+		$wp_dir = $files->getChild('wordpress');
+
+		foreach ($delete_copy as $d) {
+			$this->getChild($d)->delete();
+			$wp_dir->getChild($d)->copy($this . $d);
+		}
+
+		$wp_dir->getChild(self::WP_CONTENT)->copy($this . self::WP_CONTENT);
+
+		$wp_dir->copy($this, true);
 	}
 
 	public function isUpgradeAvailable()
@@ -50,15 +65,10 @@ class Wordpress
 		return $status && $status->response == 'upgrade';
 	}
 
-	public function backup()
-	{
-		$this->path->backup();
-	}
-
 	private function getUpgradeStatus()
 	{
 		if ($this->upgrade === null) {
-			require_once $this->path->get() . 'wp-admin/includes/update.php';
+			require_once $this . 'wp-admin/includes/update.php';
 			$status = get_core_updates();
 
 			if (!$status) {
