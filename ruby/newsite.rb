@@ -1,12 +1,22 @@
 #!/usr/bin/env ruby
 
 require 'fileutils'
+require 'socket'
 require_relative 'sudome.rb'
 
 abort "Development URL and path must be provided" if ARGV.count != 2
 abort "Must be run as root" if !is_root
 
-LOCAL_CONFIG_DIR = "/home/matt/www/config/"
+host = Socket.gethostname
+
+if host == 'server'
+	CONFIG_DIR = "/home/matt/www/conf/"
+	IP = "69.195.198.179"
+else
+	CONFIG_DIR = "/home/matt/www/config/"
+	IP = '127.0.0.1'
+end
+
 APACHE_CONF_DIR = "/etc/apache2/sites-available"
 HOSTS = '/etc/hosts'
 
@@ -16,10 +26,10 @@ path = File.expand_path(ARGV[1])
 abort "Path not correct" if !Dir.exists?(path)
 
 basename = url + '.conf'
-outfile = LOCAL_CONFIG_DIR + basename
+outfile = CONFIG_DIR + basename
 
 if !File.exists?(outfile)
-	conf = File.open("#{LOCAL_CONFIG_DIR}template.conf", 'r') { |f| f.read }
+	conf = File.open("#{CONFIG_DIR}template.conf", 'r') { |f| f.read }
 	new = conf.gsub('URL', url).gsub('PATH', path)
 	File.open(outfile, 'w') { |f| f.write(new) }
 	FileUtils.chown('matt', 'matt', outfile)
@@ -32,6 +42,6 @@ File.symlink(outfile, apache_conf)
 
 system("a2ensite #{basename}")
 
-File.open(HOSTS, 'a') { |f| f.puts "127.0.0.1\t#{url}" }
+File.open(HOSTS, 'a') { |f| f.puts "#{IP}\t#{url}" }
 
 system("service apache2 restart")
