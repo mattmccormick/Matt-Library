@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'fileutils'
-require_relative 'sudome/sudome.rb'
+require_relative 'sudome.rb'
 
 abort "Development URL and path must be provided" if ARGV.count != 2
 abort "Must be run as root" if !is_root
