@@ -30,6 +30,12 @@ abstract class System
 		return $this instanceof File;
 	}
 
+	public function getOwner()
+	{
+		$owner = posix_getpwuid(fileowner($this));
+		return $owner['name'];
+	}
+
 	/**
 	 * @param string $filepath
 	 * @throws \Exception

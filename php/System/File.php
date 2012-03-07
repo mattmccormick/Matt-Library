@@ -10,6 +10,7 @@ class File extends System
 
 	private $file;
 	private $info;
+	private $contents;
 
 	/**
 	 * @var Dir
@@ -77,6 +78,29 @@ class File extends System
 		$this->file = null;
 
 		return $result;
+	}
+
+	public function getContents()
+	{
+		if (!$this->contents) {
+			$this->contents = file_get_contents($this);
+		}
+
+		return $this->contents;
+	}
+
+	public function getContentsBefore($delimiter)
+	{
+		$pos = strpos($this->getContents(), $delimiter);
+
+		return substr($this->getContents(), 0, $pos);
+	}
+
+	public function getContentsAfter($delimiter)
+	{
+		$pos = strpos($this->getContents(), $delimiter) + strlen($delimiter);
+
+		return substr($this->getContents(), $pos);
 	}
 
 	public static function get_mime_type($file)

@@ -92,6 +92,22 @@ class Dir extends System
 		return $result;
 	}
 
+	/**
+	 * Get all the files that match $pattern
+	 * @param string $pattern
+	 * @return array of System
+	 */
+	public function getFiles($pattern)
+	{
+		$result = array();
+
+		foreach (glob($this . $pattern) as $file) {
+			$result[] = System::factory($file);
+		}
+
+		return $result;
+	}
+
 	private function addTrailingSlash($path)
 	{
 		$real = realpath($path);
