@@ -1,5 +1,5 @@
 # replace these with your server's information
-set :domain,  "69.195.198.179:22123"
+set :domain,  "173.230.150.98"
 set :user,    "matt"
 
 # name this the same thing as the directory on your server
