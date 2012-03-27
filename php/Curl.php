@@ -52,6 +52,26 @@ class Curl
 	    return File::factory($fullpath);
 	}
 
+	/**
+	 * @return string the response code for this URL
+	 */
+	public function getResponseCode()
+	{
+		$ch = curl_init($this->url);
+
+		curl_setopt($ch, CURLOPT_HEADER, true);
+		curl_setopt($ch, CURLOPT_NOBODY, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		curl_exec($ch);
+
+		$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+		curl_close($ch);
+
+		return $code;
+	}
+
 	public function headerCallback($ch, $line)
 	{
 		$match = 'attachment; filename=';

@@ -64,7 +64,7 @@ class File extends System
 
 	public function getMimeType()
 	{
-		return self::get_mime_type($this->path);
+		return self::get_mime_type($this->file);
 	}
 
 	public function copy($destination)
