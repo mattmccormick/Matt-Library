@@ -7,6 +7,7 @@ use Matt\System;
 class File extends System
 {
 	const MIME_ZIP = 'application/zip';
+	const MIME_TEXT = 'text/plain';
 
 	private $file;
 	private $info;
@@ -23,8 +24,7 @@ class File extends System
 			throw new \Exception("{$file} is not a file");
 		}
 
-		$this->file = $file;
-		$this->info = pathinfo($file);
+		$this->init($file);
 	}
 
 	public function __toString()
@@ -70,6 +70,19 @@ class File extends System
 	public function copy($destination)
 	{
 		return copy($this, $destination);
+	}
+
+	public function move($destination)
+	{
+		if (is_dir($destination)) {
+			$destination = $destination . $this->getBasename();
+		}
+
+		$result = rename($this, $destination);
+
+		if ($result) {
+			$this->init($destination);
+		}
 	}
 
 	public function delete()
@@ -123,8 +136,17 @@ class File extends System
 			case File::MIME_ZIP:
 				return new File\Archive\Zip($file);
 
+			case File::MIME_TEXT:
+				return new File\Text($file);
+
 			default:
 				return new File($file);
 		}
+	}
+
+	private function init($file)
+	{
+		$this->file = $file;
+		$this->info = pathinfo($file);
 	}
 }

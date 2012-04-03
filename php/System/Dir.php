@@ -2,6 +2,8 @@
 
 namespace Matt\System;
 
+use Matt\System\File\Text;
+
 use Matt\System;
 use Matt\System\File\Archive\Gz;
 
@@ -106,6 +108,16 @@ class Dir extends System
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @param string $name
+	 * @param string $data
+	 * @return Text
+	 */
+	public function addTextFile($name, $data)
+	{
+		return Text::create($this . $name, $data);
 	}
 
 	private function addTrailingSlash($path)

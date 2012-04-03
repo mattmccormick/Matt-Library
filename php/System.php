@@ -46,7 +46,7 @@ abstract class System
 		if (is_dir($filepath)) {
 			return new Dir($filepath);
 		} else if (is_file($filepath)) {
-			return new File($filepath);
+			return File::factory($filepath);
 		} else {
 			throw new \Exception("No System implementation for {$filepath}");
 		}
