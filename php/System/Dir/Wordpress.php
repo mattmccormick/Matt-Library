@@ -30,6 +30,7 @@ class Wordpress extends Dir
 	public function upgrade()
 	{
 		if (!$this->isUpgradeAvailable()) {
+			echo "No upgrade available\n";
 			return false;
 		}
 

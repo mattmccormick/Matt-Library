@@ -21,6 +21,6 @@ abstract class Archive extends File
 	 */
 	protected function getDestination(Dir $directory = null)
 	{
-		return $directory ? $directory : new Dir($this->getParent() . $this->getFilename());
+		return $directory ? $directory : new Dir($this->getParent() . $this->getFilename(), true);
 	}
 }
