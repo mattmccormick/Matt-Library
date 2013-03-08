@@ -111,6 +111,16 @@ class Dir extends System
 	}
 
 	/**
+	 *
+	 * @param string $filename
+	 * @return File
+	 */
+	public function getFile($filename)
+	{
+		return System::factory($this->dir . $filename);
+	}
+
+	/**
 	 * @param string $name
 	 * @param string $data
 	 * @return Text

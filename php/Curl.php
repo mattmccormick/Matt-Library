@@ -39,7 +39,8 @@ class Curl
 	    $out = curl_exec($ch);
 
 		if (!$this->filename) {
-			throw new \Exception("No filename found\n{$this->headers}");
+			$this->filename = basename($this->url);
+// 			throw new \Exception("No filename found\n{$this->headers}");
 		}
 
 		$fullpath = $dir . $this->filename;
