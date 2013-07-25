@@ -44,8 +44,6 @@ class Wordpress extends Dir
 		$download = $curl->download($lib);
 		$files = $download->extract();
 
-		$this->backup();
-
 		$delete_copy = array(self::WP_ADMIN, self::WP_INCLUDES);
 
 		$wp_dir = $files->getChild('wordpress');
@@ -58,6 +56,8 @@ class Wordpress extends Dir
 		$wp_dir->getChild(self::WP_CONTENT)->copy($this . self::WP_CONTENT);
 
 		$wp_dir->copy($this, true);
+
+		echo "Upgraded Wordpress\n";
 	}
 
 	public function isUpgradeAvailable()

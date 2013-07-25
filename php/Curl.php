@@ -39,7 +39,7 @@ class Curl
 	    $out = curl_exec($ch);
 
 		if (!$this->filename) {
-			$this->filename = basename($this->url);
+			$this->filename = basename(parse_url($this->url, PHP_URL_PATH));
 // 			throw new \Exception("No filename found\n{$this->headers}");
 		}
 

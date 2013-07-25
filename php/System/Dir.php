@@ -14,7 +14,7 @@ class Dir extends System
 	public function __construct($directory, $create = false)
 	{
 		if ($create && !is_dir($directory)) {
-			mkdir($directory);
+			mkdir($directory, 0777, true);
 		}
 
 		if (!is_dir($directory)) {
@@ -118,6 +118,11 @@ class Dir extends System
 	public function getFile($filename)
 	{
 		return System::factory($this->dir . $filename);
+	}
+
+	public function hasFile($filename)
+	{
+		return is_file($this->dir . $filename);
 	}
 
 	/**
